@@ -76,14 +76,21 @@ default `38400` to `115200`.
 > tpm support - seems to be `kmod-tpm-tis` in `Kernel modules` -> `TPM Devices`
 > WiFi card support - seems to be `kmod-iwlwifi`
 
-A working config with all of these changed applied can be found in `docs/files`.
-Just run this command:
+A working defconfig with all of these changed applied can be found in
+`docs/files/minimal-defconfig`. It was generated using this command:
 
 ```bash
-cat docs/files/minimal-config > .config
+./scripts/diffconfig.sh > docs/files/minimal-defconfig
 ```
 
-and the config is ready.
+And it can be reused like this:
+
+```bash
+cat docs/files/minimal-defconfig > .config
+make defconfig
+```
+
+and the config is ready for running `make -j$(nproc) V=s`.
 
 # Building
 

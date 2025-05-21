@@ -1,7 +1,11 @@
 # Quick step by step building guide
 
 This is a quick step by step guide for building an openwrt image for Protectli
-platforms. It assumes that Fedora is being used.
+platforms. It is assumed that Fedora is being used, but
+[this repository](https://github.com/mwarning/docker-openwrt-build-env)
+can also be used (the directions in the
+[README.md](https://github.com/mwarning/docker-openwrt-build-env/blob/master/README.md)
+need to be followed).
 
 # Dependencies
 
@@ -32,6 +36,11 @@ To verify that the necessary dependencies are installed. Then make sure to run:
 
 This will allow for picking `LuCi` to be embedded in the image, in
 `make menuconfig`.
+
+[This repository](https://github.com/mwarning/docker-openwrt-build-env) can
+also be used (the directions in the
+[README.md](https://github.com/mwarning/docker-openwrt-build-env/blob/master/README.md)
+need to be followed).
 
 # Configuration
 

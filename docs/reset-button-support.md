@@ -25,7 +25,7 @@ as it doesn't require a GPIO driver to operate.
 This so far has been based off of
 [this guide](https://kb.protectli.com/kb/mapping-the-reset-button-on-vp2410-in-linux/)
 by protectli, in which the VP2410 is used. The service has been tested on
-VP2430 platform, on which it worked.
+VP2430 and VP2440 platforms, on which it worked.
 
 It's worth to note that despite those platforms having different
 Super I/O chips:

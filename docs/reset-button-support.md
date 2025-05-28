@@ -15,7 +15,7 @@ sequence (although the script can be very easily modified to do anything).
 All the user has to do is to build according to [this guide](./building.md),
 and the `files` overlay will get applied automatically, meaning the service
 will be there already. Then just press the reset button (next to the power
-button) for at least one second, in order to do a soft factory reset.
+button) for at least ten seconds in a row, in order to do a soft factory reset.
 
 This service should work with any of the defconfigs provided in `docs/files`,
 as it doesn't require a GPIO driver to operate.

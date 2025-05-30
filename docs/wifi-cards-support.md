@@ -57,6 +57,12 @@ uci commit wireless
 wifi reload
 ```
 
+> Note: this can be automated by adding a simple script in
+> [`/etc/ucidefaults`](https://openwrt.org/docs/guide-developer/uci-defaults),
+> with the above commands put inside our overlay in for example
+> `/files/etc/uci-defaults/98-automatic-wifi`. This is explained more in depth
+> in [this part of another document](./luci-themes.md#how-to-apply-this-automatically)
+
 And then the network should be visible:
 
 ```bash

@@ -237,3 +237,60 @@ root@MyCustomRouter:~# ls /etc/uci-defaults/
 root@MyCustomRouter:~#
 CTRL-A Z for help | 115200 8N1 | NOR | Minicom 2.9 | VT102 | Offline | ttyUSB0
 ```
+
+## Changing images
+
+If some image needs to be changed in the interface, there is an easy way to do
+that. For example, the `material` theme has a logo in the top left:
+
+![](./img/material-logo.png)
+
+Searching the respective theme directory shows that there are static images
+being used:
+
+```console
+user@cfa4c1c4198f:~/openwrt-zarhus$ find feeds/luci/themes/luci-theme-material/ -iname "*.png"
+feeds/luci/themes/luci-theme-material/htdocs/luci-static/material/logo_48.png
+feeds/luci/themes/luci-theme-material/htdocs/luci-static/material/brand.png
+user@cfa4c1c4198f:~/openwrt-zarhus$
+```
+
+It turns out that the `brand.png` file corresponds to what's in the top left.
+This also could be found out through looking at the `header.ut` file:
+
+```console
+user@cfa4c1c4198f:~/openwrt-zarhus$ cat feeds/luci/themes/luci-theme-material/ucode/template/themes/material/header.ut -n | grep -F 60
+    60				<a id="logo" href="{{ ctx.authsession ? dispatcher.build_url('admin/status/overview') : '#' }}"><img src="{{ media }}/brand.png" alt="OpenWrt"></a>
+user@cfa4c1c4198f:~/openwrt-zarhus$
+```
+
+This file can be replaced in the build system with a custom logo:
+
+```console
+user@3d1a80431168:~/openwrt-zarhus/feeds/luci$ git status
+HEAD detached at 2ac26e5
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   themes/luci-theme-material/htdocs/luci-static/material/brand.png
+
+no changes added to commit (use "git add" and/or "git commit -a")
+user@3d1a80431168:~/openwrt-zarhus/feeds/luci$
+```
+
+One last thing that needs to be done before the image can be built, is to
+actually add the `material` interface to the image (and optionally remove the
+`bootstrap` one). Just edit this line from the defconfig of choice:
+
+```diff
+-CONFIG_PACKAGE_luci-theme-bootstrap=y
++CONFIG_PACKAGE_luci-theme-material=y
+```
+
+and the image can be rebuilt. Here is the result:
+
+![](./img/changed-logo.png)
+
+> Note: remember to force refresh the browser window (`Ctrl`+`Shift`+`R`)
+> in order to see this change.

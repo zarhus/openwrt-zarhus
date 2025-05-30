@@ -1,15 +1,15 @@
 # Building
 
-Use the defconfig provided at `docs/files/all-wifi-and-nic-defconfig` in order to build an
-image that has support for:
+Use the defconfig provided at `docs/files/all-wifi-and-nic-defconfig` in order
+to build an image that has support for:
 
 * JWW6051
-- Intel I225-V / I226-V NICs
-- Intel I210-V / I211-V NICs
-- Intel X710 (SFP+) NICs
-- Mediatek MT7612E (Wi-Fi 5)
-- Mediatek AW7915-NPD / MT7915E (Wi-Fi 6)
-- Mediatek MT7916AN (Wi-Fi 6E)
+* Intel I225-V / I226-V NICs
+* Intel I210-V / I211-V NICs
+* Intel X710 (SFP+) NICs
+* Mediatek MT7612E (Wi-Fi 5)
+* Mediatek AW7915-NPD / MT7915E (Wi-Fi 6)
+* Mediatek MT7916AN (Wi-Fi 6E)
 
 ```bash
 cat docs/files/all-wifi-and-nic-defconfig > .config

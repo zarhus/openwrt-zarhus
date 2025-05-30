@@ -19,25 +19,21 @@ make -j(nproc) V=s
 
 Follow build instructions from [here](./building.md).
 
-Also, the overlay containing two drivers from
-[Protectli](https://kb.protectli.com/kb/wifi-modules-for-protectli-vaults/)
-will be applied automatically. The relevant files located in the
-`wifi-fix-standalone-0.3.1.tar.gz` file provided by `Protectli` have been
-copied over to the repo:
+Also, there is a package for firmware blobs from
+[Protectli](https://kb.protectli.com/kb/wifi-modules-for-protectli-vaults/).
+It's enabled by setting `CONFIG_PACKAGE_protectli-fw=y` in the defconfig,
+which has already been done in the
+[`all-wifi-and-nic-defconfig`](./files/all-wifi-and-nic-defconfig) defconfig.
+[The package](./../package/protectli-fw/Makefile) downloads the firmware and
+installs it into the desired location on the `rootfs`, so it ends up on
+the platform in this location:
 
-```bash
-user in ~/openwrt-zarhus:# tree files
-files
-└── lib
-    └── firmware
-        └── ath10k
-            └── QCA6174
-                └── hw3.0
-                    ├── board-2.bin
-                    └── firmware-6.bin
 
-6 directories, 2 files
-user in ~/openwrt-zarhus:#
+```console
+root@OpenWrt:~# sha256sum /lib/firmware/ath10k/QCA6174/hw3.0/*
+8fcc6b96c1895bc227c3caf0bd04b23d0292f8f919e819e4e025e29ef4b44d8e  /lib/firmware/ath10k/QCA6174/hw3.0/board-2.bin
+cff583be465bb47d7e0b965ab17462a9746bbdeba58d13c8af9c8248b028e87e  /lib/firmware/ath10k/QCA6174/hw3.0/firmware-6.bin
+root@OpenWrt:~#
 ```
 
 and they will replace the default driver files, which are not working.

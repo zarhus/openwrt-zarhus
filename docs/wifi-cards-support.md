@@ -12,7 +12,7 @@ to build an image that has support for:
 * Mediatek MT7916AN (Wi-Fi 6E)
 
 ```bash
-cat docs/files/all-wifi-and-nic-defconfig > .config
+cp docs/files/all-wifi-and-nic-defconfig .config
 make defconfig
 make -j(nproc) V=s
 ```

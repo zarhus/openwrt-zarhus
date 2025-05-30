@@ -182,3 +182,58 @@ But the important thing is these custom changes can be made, and they can be
 baked into the image by modifying the source of the `LuCi` package. This above
 example didn't require that, but it could have just hard-coded
 `OpenWRT-Protectli` into the tag.
+
+### How to apply this automatically
+
+In order to automatically change the hostname, the
+[`/etc/uci-defaults`](https://openwrt.org/docs/guide-developer/uci-defaults)
+directory can be utilized. It's an easy way to make a custom script that will
+change the uci configuration once at boot time. We can use the `files` overlay
+directory in our build system to add a custom script like this:
+
+```console
+user@cca50a98840d:~/openwrt-zarhus$ cat files/etc/uci-defaults/99-set-hostname
+#!/bin/sh
+
+uci set system.@system[0].hostname='OpenWRT-Protectli'
+uci commit system
+/etc/init.d/system reload
+
+exit 0
+user@cca50a98840d:~/openwrt-zarhus$
+```
+
+The number `99` has a little bit of significance - the scripts located in
+`/etc/uci-defaults` have names beginning with numbers ranging from `0-99`,
+which indicate the order in which the scripts should be ran. Naming the custom
+script `99` ensures that it's ran at the very end.
+
+The scripts are deleted if they exit successfully, meaning that after booting,
+the `/etc/uci-defaults` directory should be empty. Here is a quick showcase of
+the script working:
+
+```console
+BusyBox v1.36.1 (2025-04-13 16:38:32 UTC) built-in shell (ash)
+
+  _______                     ________        __
+ |       |.-----.-----.-----.|  |  |  |.----.|  |_
+ |   -   ||  _  |  -__|     ||  |  |  ||   _||   _|
+ |_______||   __|_____|__|__||________||__|  |____|
+          |__| W I R E L E S S   F R E E D O M
+ -----------------------------------------------------
+ OpenWrt 24.10.1, r28597-0425664679
+ -----------------------------------------------------
+=== WARNING! =====================================
+There is no root password defined on this device!
+Use the "passwd" command to set up a new password
+in order to prevent unauthorized SSH logins.
+--------------------------------------------------
+root@MyCustomRouter:~#
+root@MyCustomRouter:~#
+root@MyCustomRouter:~#
+root@MyCustomRouter:~#
+root@MyCustomRouter:~#
+root@MyCustomRouter:~# ls /etc/uci-defaults/
+root@MyCustomRouter:~#
+CTRL-A Z for help | 115200 8N1 | NOR | Minicom 2.9 | VT102 | Offline | ttyUSB0
+```

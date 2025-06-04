@@ -21,6 +21,8 @@ define Package/$(PKG_NAME)
   SECTION:=firmware
   CATEGORY:=Firmware
   TITLE:=Protectli QCA6174 Wi-Fi board / firmware blobs
+  PROVIDES:=ath10k-firmware-qca6174
+  CONFLICTS:=ath10k-firmware-qca6174
 endef
 
 define Build/Compile

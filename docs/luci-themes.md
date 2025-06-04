@@ -1,0 +1,296 @@
+# Luci GUI configuration
+
+This document describes the process of configuring the `LuCi` web interface.
+
+## Setup note
+
+This has been tested on the `VP2430`, with the `eth0` port (furthest away from
+the power source) being used for internet connection (for easy installation of
+packages), and `eth1` (next to `eth0`) being directly connected to the PC on
+which the GUI is being tested. After running these commands on the `VP2430`:
+
+```bash
+ip link set eth0 up
+ip link set br-lan up
+/etc/init.d/network restart
+```
+
+The web interface could be accessed from the PC at
+[http://192.168.1.1/](http://192.168.1.1/).
+
+Keep in mind, this is just an example simple setup, that allows for the `LuCi`
+interface to be accessed. It can be done in other ways.
+
+## Basics of configuration
+
+By default, the image comes with `LuCi` already embedded into it. `LuCi` can
+use different themes, to change how the web browser interface looks. These are
+the available themes:
+
+```console
+root@OpenWrt:~# opkg list | grep -i luci-theme
+luci-theme-bootstrap - 25.137.37373~691440a - Bootstrap Theme (default)
+luci-theme-material - 25.137.37373~691440a - Material Theme
+luci-theme-openwrt - 25.137.37373~691440a - LuCI OpenWrt.org theme
+luci-theme-openwrt-2020 - 25.137.37373~691440a - LuCI modern OpenWrt theme
+root@OpenWrt:~#
+```
+
+By default, the image comes with `luci-theme-bootstrap` installed, which
+provides three design layouts:
+
+* `Bootstrap`
+* `BootstrapDark`
+* `BootstrapLight`
+
+In order to change the current design layout, go to `System -> System`:
+
+![](./img/system-system.png)
+
+Then change the design layout in the `Design` dropdown:
+
+![](./img/change-design-layout.png)
+
+Then click `Save & Apply`.
+
+If there is a need to use other design layouts, they can all be easily
+installed like this:
+
+```bash
+echo 'src/gz openwrt_luci https://downloads.openwrt.org/releases/24.10.1/packages/x86_64/luci' >> /etc/opkg/distfeeds.conf
+opkg update
+opkg install luci-theme-material luci-theme-openwrt luci-theme-openwrt-2020
+```
+
+Then they are available in the same spot as all the `Bootstrap` variations,
+so in `System -> System -> Design`:
+
+![](./img/all-design-layouts-in-gui.png)
+
+## Theme showcase
+
+Here is a quick showcase of all the different, default (available in `opkg`)
+themes.
+
+### Bootstrap && BootstrapDark
+
+These seem to be the same exact theme:
+
+<table>
+  <tr>
+    <td><img src="./img/Bootstrap-system-system.png" width="800"/></td>
+    <td><img src="./img/Bootstrap-realtime.png" width="800"/></td>
+  </tr>
+  <tr>
+    <td><img src="./img/Bootstrap-wireless.png" width="800"/></td>
+    <td><img src="./img/Bootstrap-routing.png" width="800"/></td>
+  </tr>
+</table>
+
+### BootstrapLight
+
+<table>
+  <tr>
+    <td><img src="./img/BootstrapLight-system-system.png" width="800"/></td>
+    <td><img src="./img/BootstrapLight-realtime.png" width="800"/></td>
+  </tr>
+  <tr>
+    <td><img src="./img/BootstrapLight-wireless.png" width="800"/></td>
+    <td><img src="./img/BootstrapLight-routing.png" width="800"/></td>
+  </tr>
+</table>
+
+### Material
+
+<table>
+  <tr>
+    <td><img src="./img/Material-system-system.png" width="800"/></td>
+    <td><img src="./img/Material-realtime.png" width="800"/></td>
+  </tr>
+  <tr>
+    <td><img src="./img/Material-wireless.png" width="800"/></td>
+    <td><img src="./img/Material-routing.png" width="800"/></td>
+  </tr>
+</table>
+
+### OpenWRT
+
+<table>
+  <tr>
+    <td><img src="./img/OpenWRT-system-system.png" width="800"/></td>
+    <td><img src="./img/OpenWRT-realtime.png" width="800"/></td>
+  </tr>
+  <tr>
+    <td><img src="./img/OpenWRT-wireless.png" width="800"/></td>
+    <td><img src="./img/OpenWRT-routing.png" width="800"/></td>
+  </tr>
+</table>
+
+### OpenWRT-2020
+
+<table>
+  <tr>
+    <td><img src="./img/OpenWRT-2020-system-system.png" width="800"/></td>
+    <td><img src="./img/OpenWRT-2020-realtime.png" width="800"/></td>
+  </tr>
+  <tr>
+    <td><img src="./img/OpenWRT-2020-wireless.png" width="800"/></td>
+    <td><img src="./img/OpenWRT-2020-routing.png" width="800"/></td>
+  </tr>
+</table>
+
+## Making custom changes
+
+For example, let's say the top banner needs to say something else other than
+`OpenWRT`, so this needs to be changed:
+
+![](./img/what-needs-to-be-changed.png)
+
+Those files are in `feeds/luci/` in the build system. They can be
+modified/inspected in order to find the neccessary information on how to
+make this change.
+
+From this file
+`themes/luci-theme-bootstrap/ucode/template/themes/bootstrap/header.ut` it can
+be deduced, that the `OpenWRT` text is actually dynamically populated from
+the router's hostname:
+
+```console
+user@e1b48df628f8:~/openwrt-zarhus/feeds/luci/themes/luci-theme-bootstrap/ucode/template/themes/bootstrap$ cat header.ut -n | grep -i hostname
+    21			<title>{{ striptags(`${boardinfo.hostname ?? '?'}${node ? ` - ${node.title}` : ''}`) }} - LuCI</title>
+    50				<a class="brand" href="/">{{ striptags(boardinfo.hostname ?? '?') }}</a>
+user@e1b48df628f8:~/openwrt-zarhus/feeds/luci/themes/luci-theme-bootstrap/ucode/template/themes/bootstrap$
+```
+
+This means that all that needs to be done in order to change the top banner
+from `OpenWRT` to `OpenWRT-Protectli` is to do this on the router:
+
+```bash
+uci set system.@system[0].hostname='OpenWrt-Protectli'
+uci commit system
+/etc/init.d/system reload
+```
+
+And here is the result:
+
+![](./img/OpenWRT-Protectli.png)
+
+As it has been shown, the particular changes to the appearance of the web UI
+depend on the exact outcome that needs to be achieved.
+
+But the important thing is these custom changes can be made, and they can be
+baked into the image by modifying the source of the `LuCi` package. This above
+example didn't require that, but it could have just hard-coded
+`OpenWRT-Protectli` into the tag.
+
+### How to apply this automatically
+
+In order to automatically change the hostname, the
+[`/etc/uci-defaults`](https://openwrt.org/docs/guide-developer/uci-defaults)
+directory can be utilized. It's an easy way to make a custom script that will
+change the uci configuration once at boot time. We can use the `files` overlay
+directory in our build system to add a custom script like this:
+
+```console
+user@cca50a98840d:~/openwrt-zarhus$ cat files/etc/uci-defaults/99-set-hostname
+#!/bin/sh
+
+uci set system.@system[0].hostname='OpenWRT-Protectli'
+uci commit system
+/etc/init.d/system reload
+
+exit 0
+user@cca50a98840d:~/openwrt-zarhus$
+```
+
+The number `99` has a little bit of significance - the scripts located in
+`/etc/uci-defaults` have names beginning with numbers ranging from `0-99`,
+which indicate the order in which the scripts should be ran. Naming the custom
+script `99` ensures that it's ran at the very end.
+
+The scripts are deleted if they exit successfully, meaning that after booting,
+the `/etc/uci-defaults` directory should be empty. Here is a quick showcase of
+the script working:
+
+```console
+BusyBox v1.36.1 (2025-04-13 16:38:32 UTC) built-in shell (ash)
+
+  _______                     ________        __
+ |       |.-----.-----.-----.|  |  |  |.----.|  |_
+ |   -   ||  _  |  -__|     ||  |  |  ||   _||   _|
+ |_______||   __|_____|__|__||________||__|  |____|
+          |__| W I R E L E S S   F R E E D O M
+ -----------------------------------------------------
+ OpenWrt 24.10.1, r28597-0425664679
+ -----------------------------------------------------
+=== WARNING! =====================================
+There is no root password defined on this device!
+Use the "passwd" command to set up a new password
+in order to prevent unauthorized SSH logins.
+--------------------------------------------------
+root@MyCustomRouter:~#
+root@MyCustomRouter:~#
+root@MyCustomRouter:~#
+root@MyCustomRouter:~#
+root@MyCustomRouter:~#
+root@MyCustomRouter:~# ls /etc/uci-defaults/
+root@MyCustomRouter:~#
+CTRL-A Z for help | 115200 8N1 | NOR | Minicom 2.9 | VT102 | Offline | ttyUSB0
+```
+
+## Changing images
+
+If some image needs to be changed in the interface, there is an easy way to do
+that. For example, the `material` theme has a logo in the top left:
+
+![](./img/material-logo.png)
+
+Searching the respective theme directory shows that there are static images
+being used:
+
+```console
+user@cfa4c1c4198f:~/openwrt-zarhus$ find feeds/luci/themes/luci-theme-material/ -iname "*.png"
+feeds/luci/themes/luci-theme-material/htdocs/luci-static/material/logo_48.png
+feeds/luci/themes/luci-theme-material/htdocs/luci-static/material/brand.png
+user@cfa4c1c4198f:~/openwrt-zarhus$
+```
+
+It turns out that the `brand.png` file corresponds to what's in the top left.
+This also could be found out through looking at the `header.ut` file:
+
+```console
+user@cfa4c1c4198f:~/openwrt-zarhus$ cat feeds/luci/themes/luci-theme-material/ucode/template/themes/material/header.ut -n | grep -F 60
+    60				<a id="logo" href="{{ ctx.authsession ? dispatcher.build_url('admin/status/overview') : '#' }}"><img src="{{ media }}/brand.png" alt="OpenWrt"></a>
+user@cfa4c1c4198f:~/openwrt-zarhus$
+```
+
+This file can be replaced in the build system with a custom logo:
+
+```console
+user@3d1a80431168:~/openwrt-zarhus/feeds/luci$ git status
+HEAD detached at 2ac26e5
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	modified:   themes/luci-theme-material/htdocs/luci-static/material/brand.png
+
+no changes added to commit (use "git add" and/or "git commit -a")
+user@3d1a80431168:~/openwrt-zarhus/feeds/luci$
+```
+
+One last thing that needs to be done before the image can be built, is to
+actually add the `material` interface to the image (and optionally remove the
+`bootstrap` one). Just edit this line from the defconfig of choice:
+
+```diff
+-CONFIG_PACKAGE_luci-theme-bootstrap=y
++CONFIG_PACKAGE_luci-theme-material=y
+```
+
+and the image can be rebuilt. Here is the result:
+
+![](./img/changed-logo.png)
+
+> Note: remember to force refresh the browser window (`Ctrl`+`Shift`+`R`)
+> in order to see this change.

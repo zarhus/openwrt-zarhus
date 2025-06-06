@@ -38,6 +38,27 @@ root@OpenWrt:~#
 
 and they will replace the default driver files, which are not working.
 
+# Tested interfaces
+
+Below is the list of network interfaces and their status. Click on a link for
+instruction on how to verify if the interface is working.
+* Ethernet:
+  * Intel i225-v/i226-v - support added,
+  [verified to be working](#ethernet-cards).
+  * Intel i210-v/i211-v  - support added, not tested. Reason: Not present on
+  VP2430.
+  * Intel X710 SFP+ - support added, not tested. Reason: Not present on
+  VP2430.
+* Wireless:
+  * AW7916-AED - support added,
+  [verified to be working](#vp2440-with-aw7916-aed).
+  * WS2433 - support added, not tested. Reason: mPCIe slot, not supported on
+  VP2430.
+  * M27612 - support added, not tested. Reason: mPCIe slot, not supported on
+  VP2430.
+  * AW7915 - support added, not tested. Reason: did not receive the hardware.
+  * JWW6051 - support added, [verified to be working](#vp2430-with-jww6051).
+
 # Running
 
 This setup has been tested on two platforms so far, with the following results:
@@ -168,6 +189,21 @@ Station ae:d0:e6:3c:90:ec (on phy1-ap0)
         associated at [boottime]:       1591.957s
         associated at:  1748445586298 ms
 ```
+
+## Ethernet cards
+
+To verify the ethernet cards are working, the following command can be executed.
+
+```bash
+dmesg | grep eth
+```
+
+The output shall contain similar line, notifying the interface is Up.
+
+```text
+[785733.098456] igc 0000:01:00.0 eth0: NIC Link is Up 1000 Mbps Full Duplex, Flow Control: RX/TX
+```
+
 
 # Included packages
 

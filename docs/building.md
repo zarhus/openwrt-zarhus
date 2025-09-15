@@ -1,6 +1,6 @@
-# Quick step by step building guide
+# Quick step-by-step building guide
 
-This is a quick step by step guide for building an openwrt image for Protectli
+This is a quick step-by-step guide for building an OpenWrt image for Protectli
 platforms. It is assumed that Fedora 41 is being used, but
 [this repository](https://github.com/mwarning/docker-openwrt-build-env)
 can also be used (the directions in the
@@ -94,7 +94,7 @@ default `38400` to `115200`.
 
 ## Using predefined config
 
-A working 'defconfig' with all of these changed applied can be found in
+A working `defconfig` with all of these changed applied can be found in
 `docs/files/minimal-defconfig`. It can be reused like this:
 
 ```bash
@@ -142,7 +142,7 @@ info available in the
 [datasheet](https://kb.protectli.com/wp-content/uploads/sites/9/2025/04/VP2430-Datasheet-20250404.pdf)).
 Make sure to use a USB cable that supports data transfer.
 
-Insert the USB stick with OpenWRT, connect with minicom:
+Insert the USB stick with OpenWrt, connect with `minicom`:
 
 ```bash
 minicom -D /dev/ttyUSBX -c on
@@ -152,7 +152,7 @@ minicom -D /dev/ttyUSBX -c on
 
 All that remains is to boot the platform.
 
-> Note: right now with this configuration OpenWRT does not appear as a one-time
+> Note: right now with this configuration OpenWrt does not appear as a one-time
 > bootable option in the Dasharo menu. It needs to be booted from file.
 
 # Running image in a VM
@@ -169,4 +169,4 @@ export HDD_PATH=./image
 ./scripts/ci/qemu-run.sh graphic os
 ```
 
-The virtual machine should boot up and into OpenWRT.
+The virtual machine should boot up and into OpenWrt.

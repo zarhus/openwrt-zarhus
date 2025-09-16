@@ -1,7 +1,7 @@
-# Quick step by step building guide
+# Quick step-by-step building guide
 
-This is a quick step by step guide for building an openwrt image for Protectli
-platforms. It is assumed that Fedora is being used, but
+This is a quick step-by-step guide for building an OpenWrt image for Protectli
+platforms. It is assumed that Fedora 41 is being used, but
 [this repository](https://github.com/mwarning/docker-openwrt-build-env)
 can also be used (the directions in the
 [README.md](https://github.com/mwarning/docker-openwrt-build-env/blob/master/README.md)
@@ -9,7 +9,7 @@ need to be followed).
 
 # Dependencies
 
-Install:
+Install dependencies for build-system:
 
 ```bash
 sudo dnf install \
@@ -21,21 +21,25 @@ sudo dnf install \
   glibc-static libstdc++-static ccache
 ```
 
-Then, run this command:
-
-```bash
-make prereq
-```
-
-To verify that the necessary dependencies are installed. Then make sure to run:
+Install OpenWrt feeds (packages):
 
 ```bash
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 ```
 
-This will allow for picking `LuCi` to be embedded in the image, in
-`make menuconfig`.
+_Note: During running the above steps, the dependency warnings might occur.
+Warnings are normal and can safely be ignored unless one explicitly requires one
+of the affected packages._
+
+Finally, to test if all necessary tools are installed run:
+
+```bash
+make prereq
+```
+
+_Note: after running this command the `menuconfig` configuration menu will
+open. Continue according to the [configuration](#configuration) section._
 
 [This repository](https://github.com/mwarning/docker-openwrt-build-env) can
 also be used (the directions in the
@@ -44,7 +48,19 @@ need to be followed).
 
 # Configuration
 
-Open up `make menuconfig`, then:
+This section showcases how to set up a working configuration manually, or use
+a predefined one.
+
+If you want to use predefined configuration, close the opened `menuconfig`
+configuration menu and proceed to step
+"[Using predefined config](#using-predefined-config)".
+
+If you want to set up the configuration manually continue with the next section.
+
+## Manual configuration
+
+If `menuconfig` isn't opened up already, run `make menuconfig` to open
+`menuconfig`, then:
 
 * select `Target System` to be `x86`
 * select `Subtarget` to be `x86_64`
@@ -76,21 +92,22 @@ default `38400` to `115200`.
 > tpm support - seems to be `kmod-tpm-tis` in `Kernel modules` -> `TPM Devices`
 > WiFi card support - seems to be `kmod-iwlwifi`
 
-A working defconfig with all of these changed applied can be found in
-`docs/files/minimal-defconfig`. It was generated using this command:
+## Using predefined config
 
-```bash
-./scripts/diffconfig.sh > docs/files/minimal-defconfig
-```
-
-And it can be reused like this:
+A working `defconfig` with all of these changed applied can be found in
+`docs/files/minimal-defconfig`. It can be reused like this:
 
 ```bash
 cat docs/files/minimal-defconfig > .config
 make defconfig
 ```
 
-and the config is ready for running `make -j$(nproc) V=s`.
+If any changes to the configuration have been made, the `defconfig` can be
+re-generated like follows:
+
+```bash
+./scripts/diffconfig.sh > docs/files/minimal-defconfig
+```
 
 # Building
 
@@ -125,7 +142,7 @@ info available in the
 [datasheet](https://kb.protectli.com/wp-content/uploads/sites/9/2025/04/VP2430-Datasheet-20250404.pdf)).
 Make sure to use a USB cable that supports data transfer.
 
-Insert the USB stick with OpenWRT, connect with minicom:
+Insert the USB stick with OpenWrt, connect with `minicom`:
 
 ```bash
 minicom -D /dev/ttyUSBX -c on
@@ -135,7 +152,7 @@ minicom -D /dev/ttyUSBX -c on
 
 All that remains is to boot the platform.
 
-> Note: right now with this configuration OpenWRT does not appear as a one-time
+> Note: right now with this configuration OpenWrt does not appear as a one-time
 > bootable option in the Dasharo menu. It needs to be booted from file.
 
 # Running image in a VM
@@ -152,4 +169,4 @@ export HDD_PATH=./image
 ./scripts/ci/qemu-run.sh graphic os
 ```
 
-The virtual machine should boot up and into OpenWRT.
+The virtual machine should boot up and into OpenWrt.

@@ -74,6 +74,11 @@ Then, enable drivers:
 `kmod-igc` is the Intel I225/I226 driver, which is needed for the four NICs,
 while `kmod-nvme` enables us to use/boot from the NVME memory.
 
+Ensure that dmidecode is available, because platform-specific logic will be
+present:
+
+* `Utilities` -> `dmidecode`
+
 Finally, embed `LuCi` interface into the image:
 
 * `LuCi` -> `Collections` -> `luci-ssl-openssl`
